@@ -14,10 +14,10 @@ MouseTool 是一个很小的 macOS 菜单栏应用。按住鼠标右键并水平
 需要先启用 macOS 自带的 Space 切换快捷键：
 
 - 系统设置 -> 键盘 -> 键盘快捷键 -> 调度中心
-- 启用 `向左移动一个空间`
-- 启用 `向右移动一个空间`
+- 启用 `向左移动一个空间`，快捷键修改为 `Control + 1`
+- 启用 `向右移动一个空间`，快捷键修改为 `Control + 2`
 
-MouseTool 发送的是 `Control + 左箭头` 和 `Control + 右箭头`，所以系统快捷键需要和这两个组合保持一致。
+MouseTool 发送的是 `Control + 1` 和 `Control + 2`，所以系统快捷键需要和这两个组合保持一致。
 
 MouseTool 还需要辅助功能权限：
 
@@ -26,7 +26,7 @@ MouseTool 还需要辅助功能权限：
 
 应用首次启动时会请求这个权限，菜单里也提供了打开辅助功能设置页的入口。
 
-## 构建和 Release 打包
+## 开发调试
 
 开发调试时，可以用 Xcode 打开 `MouseTool.xcodeproj`，直接运行 `MouseTool` target。也可以在终端里构建 Debug：
 
@@ -34,29 +34,7 @@ MouseTool 还需要辅助功能权限：
 xcodebuild -project MouseTool.xcodeproj -scheme MouseTool -configuration Debug build
 ```
 
-Release 构建会自动把产物复制到 `/Applications/MouseTool.app`。如果当前已经运行了 MouseTool，建议先从菜单栏退出，再执行 Release 构建。
-
-### 用 Xcode 打 Release
-
-1. 打开 `MouseTool.xcodeproj`。
-2. 选择 `MouseTool` scheme 和 `My Mac` 运行目标。
-3. 打开 `Product -> Scheme -> Edit Scheme...`。
-4. 在左侧选择 `Run`，把 `Build Configuration` 改成 `Release`。
-5. 执行 `Product -> Build`。
-
-构建成功后，应用会自动安装到：
-
-```sh
-/Applications/MouseTool.app
-```
-
-之后可以直接从 Finder 或终端启动：
-
-```sh
-open /Applications/MouseTool.app
-```
-
-### 用命令行打 Release
+## Build Release
 
 在项目根目录执行：
 
@@ -82,6 +60,12 @@ Release 构建脚本会在构建结束时复制：
 /Applications/MouseTool.app
 ```
 
+之后可以直接从 Finder 或终端启动：
+
+```sh
+open /Applications/MouseTool.app
+```
+
 ### 可选：生成 Archive
 
 如果只是自己使用，一般不需要 Archive；Release build 已经够用。需要保留一个 `.xcarchive` 时可以执行：
@@ -102,4 +86,3 @@ xcodebuild -runFirstLaunch
 
 - `switchThreshold`：触发切换前需要拖动的水平距离。
 - `directionLockRatio`：拖动方向需要多接近水平。
-- `triggerCooldown`：同一次右键按住期间，连续两次切换之间的最短间隔。

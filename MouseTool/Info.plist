@@ -28,8 +28,6 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
-	<key>NSAppleEventsUsageDescription</key>
-	<string>MouseTool 需要通过 System Events 发送 Control + 左右箭头来切换 Space。</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>

@@ -24,6 +24,7 @@
 		1A2B3C4D5E6F700000000105 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A2B3C4D5E6F700000000106 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F700000000107 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		60DB41342FF26112000FA844 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +41,7 @@
 		1A2B3C4D5E6F700000000030 = {
 			isa = PBXGroup;
 			children = (
+				60DB41342FF26112000FA844 /* README.md */,
 				1A2B3C4D5E6F700000000040 /* MouseTool */,
 				1A2B3C4D5E6F700000000050 /* Products */,
 			);
@@ -73,12 +75,12 @@
 		1A2B3C4D5E6F700000000060 /* MouseTool */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A2B3C4D5E6F700000000070 /* Build configuration list for PBXNativeTarget "MouseTool" */;
-				buildPhases = (
-					1A2B3C4D5E6F700000000080 /* Sources */,
-					1A2B3C4D5E6F700000000020 /* Frameworks */,
-					1A2B3C4D5E6F700000000090 /* Resources */,
-					1A2B3C4D5E6F7000000000E0 /* Copy Release App to Applications */,
-				);
+			buildPhases = (
+				1A2B3C4D5E6F700000000080 /* Sources */,
+				1A2B3C4D5E6F700000000020 /* Frameworks */,
+				1A2B3C4D5E6F700000000090 /* Resources */,
+				1A2B3C4D5E6F7000000000E0 /* Copy Release App to Applications */,
+			);
 			buildRules = (
 			);
 			dependencies = (
@@ -130,7 +132,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-	/* End PBXResourcesBuildPhase section */
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		1A2B3C4D5E6F7000000000E0 /* Copy Release App to Applications */ = {
@@ -294,11 +296,11 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-					DEVELOPMENT_TEAM = "";
-					"DEVELOPMENT_TEAM[sdk=macosx*]" = AV6P5QQ6F8;
-					ENABLE_HARDENED_RUNTIME = NO;
-					ENABLE_USER_SCRIPT_SANDBOXING = NO;
-					GENERATE_INFOPLIST_FILE = NO;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = AV6P5QQ6F8;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MouseTool/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MouseTool;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -322,11 +324,11 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-					DEVELOPMENT_TEAM = "";
-					"DEVELOPMENT_TEAM[sdk=macosx*]" = AV6P5QQ6F8;
-					ENABLE_HARDENED_RUNTIME = NO;
-					ENABLE_USER_SCRIPT_SANDBOXING = NO;
-					GENERATE_INFOPLIST_FILE = NO;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = AV6P5QQ6F8;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MouseTool/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MouseTool;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
