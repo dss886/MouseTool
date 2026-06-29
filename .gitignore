@@ -1,0 +1,37 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Xcode 用户本地状态
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# Xcode 构建产物
+build/
+DerivedData/
+*.moved-aside
+*.xcarchive
+*.dSYM
+*.dSYM.zip
+
+# Swift Package Manager / SourceKit
+.build/
+.swiftpm/
+Package.resolved
+SourcePackages/
+
+# 临时文件和日志
+*.log
+*.tmp
+*.swp
+*.swo
+
+# 应用打包产物
+*.app
+*.ipa
+*.pkg
+*.dmg
