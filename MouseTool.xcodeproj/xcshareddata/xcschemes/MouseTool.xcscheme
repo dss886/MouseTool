@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2660"
+   LastUpgradeVersion = "1600"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES"
-      buildArchitectures = "Automatic">
+      buildImplicitDependencies = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Copy Release App to Applications"
+               scriptText = "if [ &quot;$ACTION&quot; != &quot;build&quot; ] || [ &quot;$CONFIGURATION&quot; != &quot;Release&quot; ]; then&#10;    exit 0&#10;fi&#10;&#10;APP_SOURCE=&quot;$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME&quot;&#10;APP_DEST=&quot;/Applications/$FULL_PRODUCT_NAME&quot;&#10;&#10;if [ ! -d &quot;$APP_SOURCE&quot; ]; then&#10;    echo &quot;Release app not found: $APP_SOURCE&quot;&#10;    exit 1&#10;fi&#10;&#10;echo &quot;Copying $APP_SOURCE to $APP_DEST&quot;&#10;/usr/bin/ditto &quot;$APP_SOURCE&quot; &quot;$APP_DEST&quot;&#10;/usr/bin/codesign --verify --deep --strict --verbose=2 &quot;$APP_DEST&quot;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "1A2B3C4D5E6F700000000060"
+                     BuildableName = "MouseTool.app"
+                     BlueprintName = "MouseTool"
+                     ReferencedContainer = "container:MouseTool.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -27,8 +44,9 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <Testables>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -39,8 +57,7 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES"
-      queueDebuggingEnableBacktraceRecording = "Yes">
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference

@@ -75,12 +75,11 @@
 		1A2B3C4D5E6F700000000060 /* MouseTool */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A2B3C4D5E6F700000000070 /* Build configuration list for PBXNativeTarget "MouseTool" */;
-			buildPhases = (
-				1A2B3C4D5E6F700000000080 /* Sources */,
-				1A2B3C4D5E6F700000000020 /* Frameworks */,
-				1A2B3C4D5E6F700000000090 /* Resources */,
-				1A2B3C4D5E6F7000000000E0 /* Copy Release App to Applications */,
-			);
+				buildPhases = (
+					1A2B3C4D5E6F700000000080 /* Sources */,
+					1A2B3C4D5E6F700000000020 /* Frameworks */,
+					1A2B3C4D5E6F700000000090 /* Resources */,
+				);
 			buildRules = (
 			);
 			dependencies = (
@@ -133,30 +132,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1A2B3C4D5E6F7000000000E0 /* Copy Release App to Applications */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(TARGET_BUILD_DIR)/$(FULL_PRODUCT_NAME)",
-			);
-			name = "Copy Release App to Applications";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"/Applications/$(FULL_PRODUCT_NAME)",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$CONFIGURATION\" != \"Release\" ]; then\n    exit 0\nfi\n\nAPP_SOURCE=\"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\"\nAPP_DEST=\"/Applications/$FULL_PRODUCT_NAME\"\n\necho \"Copying $APP_SOURCE to $APP_DEST\"\n/usr/bin/ditto \"$APP_SOURCE\" \"$APP_DEST\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1A2B3C4D5E6F700000000080 /* Sources */ = {
