@@ -1,4 +1,5 @@
 import AppKit
+import ServiceManagement
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -56,35 +57,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func rebuildMenu() {
         let menu = NSMenu()
+        menu.autoenablesItems = false
 
-        let stateTitle: String
-        if !AccessibilityPermission.isTrusted {
-            stateTitle = "需要辅助功能权限"
-        } else if gestureController.isRunning {
-            stateTitle = "右键拖动切换：开启"
-        } else {
-            stateTitle = "右键拖动切换：关闭"
-        }
-
-        let stateItem = NSMenuItem(title: stateTitle, action: nil, keyEquivalent: "")
-        stateItem.isEnabled = false
-        menu.addItem(stateItem)
-        menu.addItem(.separator())
-
-        let toggleTitle = gestureController.isEnabled ? "停用" : "启用"
-        let toggleItem = NSMenuItem(title: toggleTitle, action: #selector(toggleEnabled), keyEquivalent: "")
-        toggleItem.target = self
-        toggleItem.isEnabled = AccessibilityPermission.isTrusted
-        menu.addItem(toggleItem)
-
+        let gestureItem = NSMenuItem(title: gestureMenuTitle, action: #selector(toggleEnabled), keyEquivalent: "")
+        gestureItem.target = self
+        gestureItem.state = gestureController.isEnabled && AccessibilityPermission.isTrusted ? .on : .off
+        gestureItem.isEnabled = AccessibilityPermission.isTrusted
+        menu.addItem(gestureItem)
+        
+        let restartItem = NSMenuItem(title: restartMenuTitle, action: #selector(restartEventTap), keyEquivalent: "")
+        restartItem.target = self
+        restartItem.isEnabled = AccessibilityPermission.isTrusted
+        menu.addItem(restartItem)
+        
         let permissionItem = NSMenuItem(title: "打开辅助功能设置", action: #selector(openAccessibilitySettings), keyEquivalent: "")
         permissionItem.target = self
         menu.addItem(permissionItem)
 
-        let restartItem = NSMenuItem(title: "重启事件监听", action: #selector(restartEventTap), keyEquivalent: "")
-        restartItem.target = self
-        restartItem.isEnabled = AccessibilityPermission.isTrusted
-        menu.addItem(restartItem)
+        menu.addItem(.separator())
+
+        let launchAtLoginItem = NSMenuItem(title: launchAtLoginMenuTitle, action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+        launchAtLoginItem.target = self
+        launchAtLoginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        menu.addItem(launchAtLoginItem)
 
         menu.addItem(.separator())
 
@@ -93,6 +88,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(quitItem)
 
         statusItem.menu = menu
+    }
+
+    private var gestureMenuTitle: String {
+        AccessibilityPermission.isTrusted ? "启用右键快捷手势" : "启用右键快捷手势（需要辅助功能权限）"
+    }
+    
+    private var restartMenuTitle: String {
+        AccessibilityPermission.isTrusted ? "重启事件监听" : "重启事件监听（需要辅助功能权限）"
+    }
+
+    private var launchAtLoginMenuTitle: String {
+        if SMAppService.mainApp.status == .requiresApproval {
+            return "启用开机自动启动（需批准）"
+        }
+
+        return "启用开机自动启动"
     }
 
     @objc private func toggleEnabled() {
@@ -120,6 +131,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             AccessibilityPermission.request()
         }
         rebuildMenu()
+    }
+
+    @objc private func toggleLaunchAtLogin() {
+        do {
+            if SMAppService.mainApp.status == .enabled {
+                try SMAppService.mainApp.unregister()
+            } else {
+                try SMAppService.mainApp.register()
+            }
+        } catch {
+            showAlert(
+                title: "无法更新开机自动启动",
+                message: error.localizedDescription
+            )
+        }
+
+        rebuildMenu()
+    }
+
+    private func showAlert(title: String, message: String) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "好")
+        alert.runModal()
     }
 
     @objc private func quit() {
