@@ -71,17 +71,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         gestureItem.isEnabled = AccessibilityPermission.isTrusted
         menu.addItem(gestureItem)
         
-        let restartItem = NSMenuItem(title: restartMenuTitle, action: #selector(restartEventTap), keyEquivalent: "")
-        restartItem.target = self
-        restartItem.isEnabled = AccessibilityPermission.isTrusted
-        menu.addItem(restartItem)
-        
-        let permissionItem = NSMenuItem(title: "打开辅助功能设置", action: #selector(openAccessibilitySettings), keyEquivalent: "")
-        permissionItem.target = self
-        menu.addItem(permissionItem)
-
-        menu.addItem(.separator())
-        
         let scrollReverseItem = NSMenuItem(title: scrollReverseMenuTitle, action: #selector(toggleScrollReverse), keyEquivalent: "")
         scrollReverseItem.target = self
         scrollReverseItem.state = scrollReverserController.isEnabled && AccessibilityPermission.isTrusted ? .on : .off
@@ -96,6 +85,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(launchAtLoginItem)
 
         menu.addItem(.separator())
+        
+        let permissionItem = NSMenuItem(title: "打开辅助功能设置", action: #selector(openAccessibilitySettings), keyEquivalent: "")
+        permissionItem.target = self
+        menu.addItem(permissionItem)
 
         let quitItem = NSMenuItem(title: "退出 MouseTool", action: #selector(quit), keyEquivalent: "q")
         quitItem.target = self
@@ -111,17 +104,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var scrollReverseMenuTitle: String {
         AccessibilityPermission.isTrusted ? "启用滚动垂直反转" : "启用滚动垂直反转（需要辅助功能权限）"
     }
-    
-    private var restartMenuTitle: String {
-        AccessibilityPermission.isTrusted ? "重启事件监听" : "重启事件监听（需要辅助功能权限）"
-    }
 
     private var launchAtLoginMenuTitle: String {
         if SMAppService.mainApp.status == .requiresApproval {
-            return "启用开机自动启动（需批准）"
+            return "开机自动启动（需批准）"
         }
 
-        return "启用开机自动启动"
+        return "开机自动启动"
     }
 
     @objc private func toggleEnabled() {
