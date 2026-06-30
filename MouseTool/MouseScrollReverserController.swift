@@ -8,7 +8,7 @@ final class MouseScrollReverserController {
         case trackpad
     }
 
-    var isEnabled = false
+    var isEnabled = true
 
     private(set) var isRunning = false
 

@@ -2,14 +2,25 @@ import AppKit
 import ServiceManagement
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    private enum DefaultsKey {
+        static let gestureEnabled = "gestureEnabled"
+        static let scrollReverseEnabled = "scrollReverseEnabled"
+        static let launchAtLoginEnabled = "launchAtLoginEnabled"
+    }
+
+    private static let defaultsSuiteName = Bundle.main.bundleIdentifier ?? "com.dss886.MouseTool"
+
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let gestureController = MouseGestureController()
     private let scrollReverserController = MouseScrollReverserController()
     private var permissionTimer: Timer?
     private var lastTrustedState = AccessibilityPermission.isTrusted
+    private var launchAtLoginEnabled = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        loadSavedToggleStates()
+        syncLaunchAtLoginWithSavedState()
         configureStatusItem()
         rebuildMenu()
         startPermissionTimer()
@@ -67,13 +78,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let gestureItem = NSMenuItem(title: gestureMenuTitle, action: #selector(toggleEnabled), keyEquivalent: "")
         gestureItem.target = self
-        gestureItem.state = gestureController.isEnabled && AccessibilityPermission.isTrusted ? .on : .off
+        gestureItem.state = gestureController.isEnabled ? .on : .off
         gestureItem.isEnabled = AccessibilityPermission.isTrusted
         menu.addItem(gestureItem)
         
         let scrollReverseItem = NSMenuItem(title: scrollReverseMenuTitle, action: #selector(toggleScrollReverse), keyEquivalent: "")
         scrollReverseItem.target = self
-        scrollReverseItem.state = scrollReverserController.isEnabled && AccessibilityPermission.isTrusted ? .on : .off
+        scrollReverseItem.state = scrollReverserController.isEnabled ? .on : .off
         scrollReverseItem.isEnabled = AccessibilityPermission.isTrusted
         menu.addItem(scrollReverseItem)
         
@@ -81,7 +92,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let launchAtLoginItem = NSMenuItem(title: launchAtLoginMenuTitle, action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         launchAtLoginItem.target = self
-        launchAtLoginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        launchAtLoginItem.state = launchAtLoginEnabled ? .on : .off
         menu.addItem(launchAtLoginItem)
 
         menu.addItem(.separator())
@@ -98,7 +109,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private var gestureMenuTitle: String {
-        AccessibilityPermission.isTrusted ? "启用右键快捷手势" : "启用右键快捷手势（需要辅助功能权限）"
+        AccessibilityPermission.isTrusted ? "启用右键切换屏幕" : "启用右键切换屏幕（需要辅助功能权限）"
     }
 
     private var scrollReverseMenuTitle: String {
@@ -115,6 +126,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func toggleEnabled() {
         gestureController.isEnabled.toggle()
+        saveToggleStates()
         if gestureController.isEnabled {
             gestureController.start()
         } else {
@@ -125,6 +137,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func toggleScrollReverse() {
         scrollReverserController.isEnabled.toggle()
+        saveToggleStates()
         if scrollReverserController.isEnabled {
             scrollReverserController.start()
         } else {
@@ -153,12 +166,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func toggleLaunchAtLogin() {
+        let newValue = !launchAtLoginEnabled
+
         do {
-            if SMAppService.mainApp.status == .enabled {
-                try SMAppService.mainApp.unregister()
-            } else {
-                try SMAppService.mainApp.register()
-            }
+            try applyLaunchAtLogin(enabled: newValue)
+            launchAtLoginEnabled = newValue
+            saveToggleStates()
         } catch {
             showAlert(
                 title: "无法更新开机自动启动",
@@ -176,6 +189,74 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.alertStyle = .warning
         alert.addButton(withTitle: "好")
         alert.runModal()
+    }
+
+    private func loadSavedToggleStates() {
+        let defaults = Self.defaults
+        gestureController.isEnabled = savedBool(
+            forKey: DefaultsKey.gestureEnabled,
+            defaultValue: true,
+            defaults: defaults
+        )
+        scrollReverserController.isEnabled = savedBool(
+            forKey: DefaultsKey.scrollReverseEnabled,
+            defaultValue: true,
+            defaults: defaults
+        )
+        launchAtLoginEnabled = savedBool(
+            forKey: DefaultsKey.launchAtLoginEnabled,
+            defaultValue: isLaunchAtLoginRequestedBySystem,
+            defaults: defaults
+        )
+        NSLog("MouseTool 已读取开关状态：gestureEnabled=\(gestureController.isEnabled), scrollReverseEnabled=\(scrollReverserController.isEnabled), launchAtLoginEnabled=\(launchAtLoginEnabled)")
+    }
+
+    private func saveToggleStates() {
+        let defaults = Self.defaults
+        defaults.set(gestureController.isEnabled, forKey: DefaultsKey.gestureEnabled)
+        defaults.set(scrollReverserController.isEnabled, forKey: DefaultsKey.scrollReverseEnabled)
+        defaults.set(launchAtLoginEnabled, forKey: DefaultsKey.launchAtLoginEnabled)
+        defaults.synchronize()
+        NSLog("MouseTool 已保存开关状态到 \(Self.defaultsSuiteName)：gestureEnabled=\(gestureController.isEnabled), scrollReverseEnabled=\(scrollReverserController.isEnabled), launchAtLoginEnabled=\(launchAtLoginEnabled)")
+    }
+
+    private func syncLaunchAtLoginWithSavedState() {
+        do {
+            try applyLaunchAtLogin(enabled: launchAtLoginEnabled)
+        } catch {
+            NSLog("MouseTool 同步开机自动启动状态失败：\(error.localizedDescription)")
+        }
+    }
+
+    private func applyLaunchAtLogin(enabled: Bool) throws {
+        switch (enabled, SMAppService.mainApp.status) {
+        case (true, .enabled), (true, .requiresApproval):
+            return
+        case (true, _):
+            try SMAppService.mainApp.register()
+        case (false, .enabled), (false, .requiresApproval):
+            try SMAppService.mainApp.unregister()
+        case (false, _):
+            return
+        }
+    }
+
+    private var isLaunchAtLoginRequestedBySystem: Bool {
+        switch SMAppService.mainApp.status {
+        case .enabled, .requiresApproval:
+            return true
+        default:
+            return false
+        }
+    }
+
+    private static var defaults: UserDefaults {
+        UserDefaults(suiteName: defaultsSuiteName) ?? .standard
+    }
+
+    private func savedBool(forKey key: String, defaultValue: Bool, defaults: UserDefaults) -> Bool {
+        guard defaults.object(forKey: key) != nil else { return defaultValue }
+        return defaults.bool(forKey: key)
     }
 
     @objc private func quit() {
