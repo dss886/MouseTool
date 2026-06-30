@@ -4,6 +4,7 @@ import ServiceManagement
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let gestureController = MouseGestureController()
+    private let scrollReverserController = MouseScrollReverserController()
     private var permissionTimer: Timer?
     private var lastTrustedState = AccessibilityPermission.isTrusted
 
@@ -15,6 +16,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         if AccessibilityPermission.isTrusted {
             gestureController.start()
+            scrollReverserController.start()
         } else {
             AccessibilityPermission.request()
         }
@@ -23,6 +25,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         permissionTimer?.invalidate()
         gestureController.stop()
+        scrollReverserController.stop()
     }
 
     private func configureStatusItem() {
@@ -47,6 +50,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let trusted = AccessibilityPermission.isTrusted
         if trusted, gestureController.isEnabled, !gestureController.isRunning {
             gestureController.start()
+        }
+        if trusted, scrollReverserController.isEnabled, !scrollReverserController.isRunning {
+            scrollReverserController.start()
         }
 
         if trusted != lastTrustedState {
@@ -75,6 +81,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(permissionItem)
 
         menu.addItem(.separator())
+        
+        let scrollReverseItem = NSMenuItem(title: scrollReverseMenuTitle, action: #selector(toggleScrollReverse), keyEquivalent: "")
+        scrollReverseItem.target = self
+        scrollReverseItem.state = scrollReverserController.isEnabled && AccessibilityPermission.isTrusted ? .on : .off
+        scrollReverseItem.isEnabled = AccessibilityPermission.isTrusted
+        menu.addItem(scrollReverseItem)
+        
+        menu.addItem(.separator())
 
         let launchAtLoginItem = NSMenuItem(title: launchAtLoginMenuTitle, action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         launchAtLoginItem.target = self
@@ -92,6 +106,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var gestureMenuTitle: String {
         AccessibilityPermission.isTrusted ? "启用右键快捷手势" : "启用右键快捷手势（需要辅助功能权限）"
+    }
+
+    private var scrollReverseMenuTitle: String {
+        AccessibilityPermission.isTrusted ? "启用滚动垂直反转" : "启用滚动垂直反转（需要辅助功能权限）"
     }
     
     private var restartMenuTitle: String {
@@ -116,6 +134,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         rebuildMenu()
     }
 
+    @objc private func toggleScrollReverse() {
+        scrollReverserController.isEnabled.toggle()
+        if scrollReverserController.isEnabled {
+            scrollReverserController.start()
+        } else {
+            scrollReverserController.stop()
+        }
+        rebuildMenu()
+    }
+
     @objc private func openAccessibilitySettings() {
         AccessibilityPermission.openSettings()
         AccessibilityPermission.request()
@@ -125,8 +153,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func restartEventTap() {
         gestureController.stop()
+        scrollReverserController.stop()
         if AccessibilityPermission.isTrusted {
             gestureController.start()
+            scrollReverserController.start()
         } else {
             AccessibilityPermission.request()
         }

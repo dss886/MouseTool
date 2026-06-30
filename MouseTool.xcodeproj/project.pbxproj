@@ -13,6 +13,7 @@
 		1A2B3C4D5E6F700000000004 /* SpaceSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F700000000104 /* SpaceSwitcher.swift */; };
 		1A2B3C4D5E6F700000000005 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F700000000106 /* main.swift */; };
 		1A2B3C4D5E6F700000000006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F700000000107 /* Assets.xcassets */; };
+		1A2B3C4D5E6F700000000007 /* MouseScrollReverserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F700000000108 /* MouseScrollReverserController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		1A2B3C4D5E6F700000000105 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A2B3C4D5E6F700000000106 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F700000000107 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1A2B3C4D5E6F700000000108 /* MouseScrollReverserController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MouseScrollReverserController.swift; sourceTree = "<group>"; };
 		60DB41342FF26112000FA844 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,6 +56,7 @@
 				1A2B3C4D5E6F700000000106 /* main.swift */,
 				1A2B3C4D5E6F700000000102 /* AccessibilityPermission.swift */,
 				1A2B3C4D5E6F700000000103 /* MouseGestureController.swift */,
+				1A2B3C4D5E6F700000000108 /* MouseScrollReverserController.swift */,
 				1A2B3C4D5E6F700000000104 /* SpaceSwitcher.swift */,
 				1A2B3C4D5E6F700000000105 /* Info.plist */,
 				1A2B3C4D5E6F700000000107 /* Assets.xcassets */,
@@ -141,6 +144,7 @@
 				1A2B3C4D5E6F700000000001 /* AppDelegate.swift in Sources */,
 				1A2B3C4D5E6F700000000002 /* AccessibilityPermission.swift in Sources */,
 				1A2B3C4D5E6F700000000003 /* MouseGestureController.swift in Sources */,
+				1A2B3C4D5E6F700000000007 /* MouseScrollReverserController.swift in Sources */,
 				1A2B3C4D5E6F700000000004 /* SpaceSwitcher.swift in Sources */,
 				1A2B3C4D5E6F700000000005 /* main.swift in Sources */,
 			);
